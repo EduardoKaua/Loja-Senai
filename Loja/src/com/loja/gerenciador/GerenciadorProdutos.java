@@ -38,10 +38,33 @@ public class GerenciadorProdutos {
     public boolean modificarProduto(Produto produtoModificado) {
         Produto existente = localizarPorId(produtoModificado.getId());
         if (existente != null) {
-            existente.setNome(produtoModificado.getNome());
+            // Validar e atualizar o nome
+            String novoNome = produtoModificado.getNome();
+            while (novoNome == null || novoNome.length() < 1) {
+                System.out.println("O nome do produto deve ter pelo menos 1 caractere.");
+                System.out.print("Por favor, refaça a entrada do nome: ");
+                novoNome = new java.util.Scanner(System.in).nextLine();
+            }
+            existente.setNome(novoNome);
+
+            // Validar e atualizar o preço
+            if (produtoModificado.getPreco() <= 0) {
+                throw new IllegalArgumentException("O preço precisa ser maior que zero.");
+            }
             existente.setPreco(produtoModificado.getPreco());
+
+            // Validar e atualizar a quantidade
+            if (produtoModificado.getQuantidadeEstoque() < 0) {
+                throw new IllegalArgumentException("Quantidade em estoque não pode ser negativa.");
+            }
             existente.setQuantidadeEstoque(produtoModificado.getQuantidadeEstoque());
+
+            // Validar e atualizar a categoria
+            if (produtoModificado.getCategoria() == null || produtoModificado.getCategoria().isEmpty()) {
+                throw new IllegalArgumentException("A categoria é obrigatória.");
+            }
             existente.setCategoria(produtoModificado.getCategoria());
+
             System.out.println("Produto atualizado com sucesso!");
             return true;
         }
@@ -61,15 +84,30 @@ public class GerenciadorProdutos {
 
     // Valida os atributos do produto
     private void verificarProduto(Produto produto) {
-        if (produto.getNome() == null || produto.getNome().length() < 2) {
+        // Loop até que o nome seja válido (pelo menos 1 caractere)
+        while (produto.getNome() == null || produto.getNome().length() < 1) {
+            System.out.println("O nome do produto deve ter pelo menos 1 caractere.");
+            // Solicita que o usuário insira novamente o nome
+            System.out.print("Por favor, refaça a entrada do nome: ");
+            produto.setNome(new java.util.Scanner(System.in).nextLine());
+        }
+
+        // Verifica se o nome tem pelo menos 2 caracteres
+        if (produto.getNome().length() < 2) {
             throw new IllegalArgumentException("O nome deve ter pelo menos 2 caracteres.");
         }
+
+        // Verificação de preço
         if (produto.getPreco() <= 0) {
             throw new IllegalArgumentException("O preço precisa ser maior que zero.");
         }
+
+        // Verificação de quantidade
         if (produto.getQuantidadeEstoque() < 0) {
             throw new IllegalArgumentException("Quantidade em estoque não pode ser negativa.");
         }
+
+        // Verificação de categoria
         if (produto.getCategoria() == null || produto.getCategoria().isEmpty()) {
             throw new IllegalArgumentException("A categoria é obrigatória.");
         }
