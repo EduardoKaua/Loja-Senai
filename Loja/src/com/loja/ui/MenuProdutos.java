@@ -1,6 +1,8 @@
 package com.loja.ui;
+
 import com.loja.gerenciador.GerenciadorProdutos;
 import com.loja.modelo.Produto;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,6 +24,8 @@ public class MenuProdutos {
             System.out.println("3. Mostrar Todos os Produtos");
             System.out.println("4. Editar Produto");
             System.out.println("5. Remover Produto");
+            System.out.println("6. Buscar Produto por Nome");
+            System.out.println("7. Buscar Produto por Categoria");
             System.out.println("0. Sair");
             System.out.print("Selecione uma opção: ");
             escolha = entrada.nextInt();
@@ -33,6 +37,8 @@ public class MenuProdutos {
                 case 3 -> mostrarProdutos();
                 case 4 -> editarProduto();
                 case 5 -> removerProduto();
+                case 6 -> buscarProdutoPorNome();
+                case 7 -> buscarProdutoPorCategoria();
                 case 0 -> System.out.println("Encerrando...");
                 default -> System.out.println("Opção inválida!");
             }
@@ -42,8 +48,8 @@ public class MenuProdutos {
     private void adicionarProduto() {
         System.out.print("Nome do Produto: ");
         String nome = entrada.nextLine();
-        double preco = solicitarPrecoValido();
-        int quantidade = solicitarQuantidadeValida();
+        double preco = lerPrecoValido("Preço: ");
+        int quantidade = lerQuantidadeValida("Quantidade: ");
         System.out.print("Categoria: ");
         String categoria = entrada.nextLine();
 
@@ -80,8 +86,8 @@ public class MenuProdutos {
         if (produto != null) {
             System.out.print("Novo Nome: ");
             produto.setNome(entrada.nextLine());
-            produto.setPreco(solicitarPrecoValido());
-            produto.setQuantidadeEstoque(solicitarQuantidadeValida());
+            produto.setPreco(lerPrecoValido("Novo Preço: "));
+            produto.setQuantidadeEstoque(lerQuantidadeValida("Nova Quantidade: "));
             System.out.print("Nova Categoria: ");
             produto.setCategoria(entrada.nextLine());
 
@@ -101,35 +107,61 @@ public class MenuProdutos {
         }
     }
 
-    private double solicitarPrecoValido() {
-        while (true) {
-            try {
-                System.out.print("Digite o preço do produto: ");
-                double preco = Double.parseDouble(entrada.nextLine());
-                if (preco <= 0) {
-                    System.out.println("O preço deve ser maior que zero. Tente novamente.");
-                } else {
-                    return preco;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida! Insira um valor numérico para o preço.");
-            }
+    private void buscarProdutoPorNome() {
+        System.out.print("Informe o Nome do Produto: ");
+        String nome = entrada.nextLine();
+        List<Produto> produtos = gerenciador.localizarPorNome(nome);
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado com esse nome.");
+        } else {
+            produtos.forEach(System.out::println);
         }
     }
 
-    private int solicitarQuantidadeValida() {
+    private void buscarProdutoPorCategoria() {
+        System.out.print("Informe a Categoria do Produto: ");
+        String categoria = entrada.nextLine();
+        List<Produto> produtos = gerenciador.localizarPorCategoria(categoria);
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado nessa categoria.");
+        } else {
+            produtos.forEach(System.out::println);
+        }
+    }
+
+    private double lerPrecoValido(String mensagem) {
+        double preco;
         while (true) {
             try {
-                System.out.print("Digite a quantidade do produto: ");
-                int quantidade = Integer.parseInt(entrada.nextLine());
-                if (quantidade < 0) {
-                    System.out.println("A quantidade não pode ser negativa. Tente novamente.");
+                System.out.print(mensagem);
+                preco = Double.parseDouble(entrada.nextLine());
+                if (preco <= 0) {
+                    System.out.println("O preço deve ser maior que zero.");
                 } else {
-                    return quantidade;
+                    break;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida! Insira um valor numérico inteiro para a quantidade.");
+                System.out.println("Entrada inválida. Digite um número válido.");
             }
         }
+        return preco;
+    }
+
+    private int lerQuantidadeValida(String mensagem) {
+        int quantidade;
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                quantidade = Integer.parseInt(entrada.nextLine());
+                if (quantidade < 0) {
+                    System.out.println("A quantidade não pode ser negativa.");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número inteiro válido.");
+            }
+        }
+        return quantidade;
     }
 }

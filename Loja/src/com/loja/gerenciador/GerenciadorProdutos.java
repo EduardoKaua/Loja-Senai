@@ -1,4 +1,5 @@
 package com.loja.gerenciador;
+
 import com.loja.modelo.Produto;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +73,27 @@ public class GerenciadorProdutos {
         if (produto.getCategoria() == null || produto.getCategoria().isEmpty()) {
             throw new IllegalArgumentException("A categoria é obrigatória.");
         }
+    }
+
+    // Busca produtos pelo nome (case insensitive)
+    public List<Produto> localizarPorNome(String nome) {
+        List<Produto> resultado = new ArrayList<>();
+        for (Produto produto : listaProdutos) {
+            if (produto.getNome().equalsIgnoreCase(nome)) {
+                resultado.add(produto);
+            }
+        }
+        return resultado;
+    }
+
+    // Busca produtos pela categoria (case insensitive)
+    public List<Produto> localizarPorCategoria(String categoria) {
+        List<Produto> resultado = new ArrayList<>();
+        for (Produto produto : listaProdutos) {
+            if (produto.getCategoria().equalsIgnoreCase(categoria)) {
+                resultado.add(produto);
+            }
+        }
+        return resultado;
     }
 }
