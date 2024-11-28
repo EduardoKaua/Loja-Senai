@@ -38,28 +38,28 @@ public class GerenciadorProdutos {
     public boolean modificarProduto(Produto produtoModificado) {
         Produto existente = localizarPorId(produtoModificado.getId());
         if (existente != null) {
-            // Validar e atualizar o nome
-            String novoNome = produtoModificado.getNome();
-            while (novoNome == null || novoNome.length() < 1) {
+            // Validação e correção do nome
+            String nomeProduto = produtoModificado.getNome();
+            while (nomeProduto == null || nomeProduto.length() < 1) {
                 System.out.println("O nome do produto deve ter pelo menos 1 caractere.");
                 System.out.print("Por favor, refaça a entrada do nome: ");
-                novoNome = new java.util.Scanner(System.in).nextLine();
+                nomeProduto = new java.util.Scanner(System.in).nextLine();
             }
-            existente.setNome(novoNome);
+            existente.setNome(nomeProduto);
 
-            // Validar e atualizar o preço
+            // Verifica e atualiza o preço
             if (produtoModificado.getPreco() <= 0) {
                 throw new IllegalArgumentException("O preço precisa ser maior que zero.");
             }
             existente.setPreco(produtoModificado.getPreco());
 
-            // Validar e atualizar a quantidade
+            // Verifica e atualiza a quantidade
             if (produtoModificado.getQuantidadeEstoque() < 0) {
                 throw new IllegalArgumentException("Quantidade em estoque não pode ser negativa.");
             }
             existente.setQuantidadeEstoque(produtoModificado.getQuantidadeEstoque());
 
-            // Validar e atualizar a categoria
+            // Verifica e atualiza a categoria
             if (produtoModificado.getCategoria() == null || produtoModificado.getCategoria().isEmpty()) {
                 throw new IllegalArgumentException("A categoria é obrigatória.");
             }
@@ -84,10 +84,9 @@ public class GerenciadorProdutos {
 
     // Valida os atributos do produto
     private void verificarProduto(Produto produto) {
-        // Loop até que o nome seja válido (pelo menos 1 caractere)
+        // Validação de nome (deve ter pelo menos 1 caractere)
         while (produto.getNome() == null || produto.getNome().length() < 1) {
             System.out.println("O nome do produto deve ter pelo menos 1 caractere.");
-            // Solicita que o usuário insira novamente o nome
             System.out.print("Por favor, refaça a entrada do nome: ");
             produto.setNome(new java.util.Scanner(System.in).nextLine());
         }
